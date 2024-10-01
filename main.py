@@ -1,5 +1,6 @@
 import os
 import json
+import curses
 
 
 class Todo:
@@ -10,13 +11,14 @@ class Todo:
                 }
     def add_task(self):
         task = input("Please enter a task: ")
-        task_id = self.get_todo_list_length() + 1
-        entry = (task_id, task)
-        self.todo_dict['Tasks'].append(entry)
-        
         if os.path.isfile('todo.json'):
+            task_id = self.get_todo_list_length() + 1
+            entry = (task_id, task)
+            self.todo_dict['Tasks'].append(entry)
             self.append_to_file(entry)
         else:
+            entry = (1, task)
+            self.todo_dict['Tasks'].append(entry)
             self.write_to_file(self.todo_dict)
 
     def get_todo_list_length(self):
@@ -40,7 +42,7 @@ class Todo:
             tasks = json.load(view)
 
             for i in tasks['Tasks']:
-                print(i)
+                print(f'\t{i}')
 
             return tasks['Tasks']
 
@@ -58,12 +60,3 @@ class Todo:
             with open('todo.json', 'w', encoding='utf-8') as updated_entry:
                 json.dump(fp=updated_entry, obj=data, indent=4)
 
-
-todo1 = Todo()
-
-user_choice = int(input("Type '1' to add a task, type '2' to delte a task: "))
-
-if user_choice == 1:
-    todo1.add_task()
-else:
-    todo1.delete_task()
